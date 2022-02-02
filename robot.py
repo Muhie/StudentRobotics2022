@@ -4,7 +4,6 @@ import time
 
 
 
-
 class Movement():
     def __init__(self, R, motorboard1, motorboard2):
         self.R = R
@@ -14,6 +13,7 @@ class Movement():
         self.fb_r_power = 0
         self.bb_l_power = 0
         self.bb_r_power = 0
+        self.master_power = 0.1
     
     def move(self):
         self.R.motor_boards[self.fb].motors[0].power = self.fb_l_power
@@ -22,31 +22,31 @@ class Movement():
         self.R.motor_boards[self.bb].motors[1].power = self.bb_r_power
     
     def forwards(self):
-        self.fb_l_power = 0.1
-        self.fb_r_power = 0.1
-        self.bb_r_power = 0.1
-        self.bb_l_power = 0.1
+        self.fb_l_power = self.master_power
+        self.fb_r_power = self.master_power
+        self.bb_r_power = self.master_power
+        self.bb_l_power = self.master_power
         self.move()
 
     def backwards(self):
-        self.fb_l_power = -0.1
-        self.fb_r_power = -0.1
-        self.bb_r_power = -0.1
-        self.bb_l_power = -0.1
+        self.fb_l_power = -self.master_power
+        self.fb_r_power = -self.master_power
+        self.bb_r_power = -self.master_power
+        self.bb_l_power = -self.master_power
         self.move()
 
     def left(self):
-        self.fb_l_power = 0.1
-        self.fb_r_power = -0.1
-        self.bb_r_power = -0.1
-        self.bb_l_power = 0.1
+        self.fb_l_power = self.master_power
+        self.fb_r_power = -self.master_power
+        self.bb_r_power = -self.master_power
+        self.bb_l_power = self.master_power
         self.move()
 
     def right(self):
-        self.fb_l_power = -0.1
-        self.fb_r_power = 0.1
-        self.bb_r_power = 0.1
-        self.bb_l_power = -0.1
+        self.fb_l_power = -self.master_power
+        self.fb_r_power = self.master_power
+        self.bb_r_power = self.master_power
+        self.bb_l_power = -self.master_power
         self.move()
 
     def start(self):
