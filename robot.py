@@ -24,29 +24,29 @@ class Movement():
     def forwards(self):
         self.fb_l_power = self.master_power
         self.fb_r_power = self.master_power
-        self.bb_r_power = self.master_power
         self.bb_l_power = self.master_power
+        self.bb_r_power = self.master_power
         self.move()
 
     def backwards(self):
         self.fb_l_power = -self.master_power
         self.fb_r_power = -self.master_power
-        self.bb_r_power = -self.master_power
         self.bb_l_power = -self.master_power
+        self.bb_r_power = -self.master_power
         self.move()
 
     def left(self):
         self.fb_l_power = self.master_power
         self.fb_r_power = -self.master_power
-        self.bb_r_power = -self.master_power
-        self.bb_l_power = self.master_power
+        self.bb_l_power = -self.master_power
+        self.bb_r_power = self.master_power
         self.move()
 
     def right(self):
         self.fb_l_power = -self.master_power
         self.fb_r_power = self.master_power
-        self.bb_r_power = self.master_power
-        self.bb_l_power = -self.master_power
+        self.bb_l_power = self.master_power
+        self.bb_r_power = -self.master_power
         self.move()
 
     def start(self):
