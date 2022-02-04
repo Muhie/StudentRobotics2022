@@ -19,8 +19,8 @@ class Movement():
     def move(self):
         self.R.motor_boards[self.fb].motors[0].power = self.fb_l_power
         self.R.motor_boards[self.fb].motors[1].power = self.fb_r_power
-        self.R.motor_boards[self.bb].motors[0].power = self.bb_l_power
-        self.R.motor_boards[self.bb].motors[1].power = self.bb_r_power
+        self.R.motor_boards[self.bb].motors[1].power = self.bb_l_power
+        self.R.motor_boards[self.bb].motors[0].power = self.bb_r_power
     
     def forwards(self):
         self.fb_l_power = self.master_power
