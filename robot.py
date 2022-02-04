@@ -9,15 +9,49 @@ class Collybot(Robot):
         super().__init__() #call ronot contructor
         self.fb = 'SR0WE7' #Front motorboard
         self.bb = 'SR0JH18' #Back motorboard
-        
         self.marker_ids = self.camera.save(self.usbkey / "initial-view.png")
-        
         self.fb_0_power = 0
         self.fb_1_power = 0
         self.bb_0_power = 0
         self.bb_1_power = 0
         self.master_power = 0.15
-    
+
+    def power_H0(self):
+        self.power_board.outputs[OUT_H0].is_enabled = True
+
+    def depower_H0(self):
+        self.power_board.outputs[OUT_H0].is_enabled = False
+
+    def power_H1(self):
+        self.power_board.outputs[OUT_H1].is_enabled = True
+
+    def depower_H1(self):
+        self.power_board.outputs[OUT_H1].is_enabled = False
+
+    def power_L0(self):
+        self.power_board.outputs[OUT_L0].is_enabled = True
+
+    def depower_L0(self):
+        self.power_board.outputs[OUT_L0].is_enabled = False
+
+    def power_L1(self):
+        self.power_board.outputs[OUT_L1].is_enabled = True
+
+    def depower_L1(self):
+        self.power_board.outputs[OUT_L1].is_enabled = False
+
+    def power_L2(self):
+        self.power_board.outputs[OUT_L2].is_enabled = True
+
+    def depower_L2(self):
+        self.power_board.outputs[OUT_L2].is_enabled = False
+
+    def power_L3(self):
+        self.power_board.outputs[OUT_L3].is_enabled = True
+
+    def depower_L3(self):
+        self.power_board.outputs[OUT_L3].is_enabled = False
+
     def move(self):
         self.fb.motors[0].power = self.fb_0_power
         self.fb.motors[1].power = self.fb_1_power
@@ -53,7 +87,8 @@ class Collybot(Robot):
         self.move()
 
     def start(self):
-        
+        self.power_H0()
+        self.power_h1()
         self.forwards()
         time.sleep(5)
         self.backwards()
@@ -62,8 +97,6 @@ class Collybot(Robot):
         time.sleep(5)
         self.right()
         time.sleep(5)
-
-        marker_ids = self.camera.save(self.usbkey / "initial-view.png")
 
         while True:
             markers = self.camera.see()
