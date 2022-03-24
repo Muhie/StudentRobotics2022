@@ -7,8 +7,8 @@ import time
 class Collybot(Robot):
     def __init__(self):
         super().__init__() #call ronot contructor
-        self.fb = 'SR0WE7' #Front motorboard
-        self.bb = 'SR0JH18' #Back motorboard
+        self.fb = self.motor_boards['SR0WE7'] #Front motorboard
+        self.bb = self.motor_boards['SR0JH18'] #Back motorboard
         self.marker_ids = self.camera.save(self.usbkey / "initial-view.png")
         self.fov = 60
         self.fb_0_power = 0
@@ -93,9 +93,9 @@ class Collybot(Robot):
         self.right()
         time.sleep(5)
         self.forwards()
-        time.sleep()
+        time.sleep(5)
         self.backwards()
-        time.sleep()
+        time.sleep(5)
 
     def marker(self):
         self.markers = self.camera.see()
@@ -127,7 +127,8 @@ class Collybot(Robot):
     def start(self):
         self.power_H1()
         self.power_H0()
-        self.practice_movement()
+        self.movement_test()
+        self.marker_test()
 
 def main():
     jeff = Collybot()
