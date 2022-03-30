@@ -6,16 +6,17 @@ import time
 
 class Collybot(Robot):
     def __init__(self):
-        super().__init__() #call ronot contructor
+        super().__init__() #call robot contructor
         self.fb = self.motor_boards['SR0WE7'] #Front motorboard
         self.bb = self.motor_boards['SR0JH18'] #Back motorboard
+        #self.servo=self.servo_board.servos[0]
         self.marker_ids = self.camera.save(self.usbkey / "initial-view.png")
         self.fov = 60
-        self.fb_0_power = 0
-        self.fb_1_power = 0
-        self.bb_0_power = 0
-        self.bb_1_power = 0
-        self.master_power = 0.15
+        self.fl = 0
+        self.fr = 0
+        self.bl = 0
+        self.br = 0
+        self.master_power = 0.2
 
     def power_H0(self):
         self.power_board.outputs[OUT_H0].is_enabled = True
@@ -52,42 +53,55 @@ class Collybot(Robot):
 
     def depower_L3(self):
         self.power_board.outputs[OUT_L3].is_enabled = False
-
-    def move(self):
-        self.fb.motors[0].power = self.fb_0_power
-        self.fb.motors[1].power = self.fb_1_power
-        self.bb.motors[1].power = self.bb_0_power
-        self.bb.motors[0].power = self.bb_1_power
     
+    def apply(self):
+        self.fb.motors[0].power=self.fl
+        self.fb.motors[1].power=self.fr
+        self.bb.motors[0].power=self.bl
+        self.bb.motors[1].power=self.br
+
     def forwards(self):
-        self.fb_0_power = self.master_power
-        self.fb_1_power = self.master_power
-        self.bb_0_power = self.master_power
-        self.bb_1_power = self.master_power
-        self.move()
+        print("moving forwards")
+        self.fl = self.master_power
+        self.fr = self.master_power
+        self.bl = self.master_power
+        self.br = self.master_power
+        self.apply()
 
     def backwards(self):
-        self.fb_0_power = -self.master_power
-        self.fb_1_power = -self.master_power
-        self.bb_0_power = -self.master_power
-        self.bb_1_power = -self.master_power
-        self.move()
+        print("moving backwards")
+        self.fl = -self.master_power
+        self.fr = -self.master_power
+        self.bl = -self.master_power
+        self.br = -self.master_power
+        self.apply()
 
     def left(self):
-        self.fb_0_power = 2*self.master_power
-        self.fb_1_power = -2*self.master_power
-        self.bb_0_power = -2*self.master_power
-        self.bb_1_power = 2*self.master_power
-        self.move()
+        print("moving left")
+        self.fl = 2*self.master_power
+        self.fr = -2*self.master_power
+        self.bl = -2*self.master_power
+        self.br = 2*self.master_power
+        self.apply()
 
     def right(self):
-        self.fb_0_power = -2*self.master_power
-        self.fb_1_power = 2*self.master_power
-        self.bb_0_power = 2*self.master_power
-        self.bb_1_power = -2*self.master_power
-        self.move()
+        print("moving right")
+        self.fl = -2*self.master_power
+        self.fr = 2*self.master_power
+        self.bl = 2*self.master_power
+        self.br = -2*self.master_power
+        self.apply()
+
+    def stop(self):
+        print("stopping")
+        self.fl = 0
+        self.fr = 0
+        self.bl = 0
+        self.br = 0
+        self.apply()
 
     def movement_test(self):
+        print("starting movement test")
         self.left()
         time.sleep(5)
         self.right()
@@ -96,6 +110,8 @@ class Collybot(Robot):
         time.sleep(5)
         self.backwards()
         time.sleep(5)
+        self.stop()
+
 
     def marker(self):
         self.markers = self.camera.see()
@@ -104,10 +120,12 @@ class Collybot(Robot):
         self.markers = self.camera.see_ids()
     
     def marker_test(self):
+        print("starting marker test")
         while True:
             markers = self.camera.see()
             print("I can see", len(markers), "markers:")
-
+            if markers:
+                self.forwards()
             for m in markers:
                 print(" - Marker #{0} is {1} metres away".format(m.id, m.distance))
 
@@ -128,7 +146,15 @@ class Collybot(Robot):
         self.power_H1()
         self.power_H0()
         self.movement_test()
-        self.marker_test()
+        #self.servo_test()
+        #self.marker_test()
+    
+    def servo_test(self):
+        self.servo.position=0.5
+        time.sleep(5)
+        self.servo.position=-0.5
+        time.sleep(5)
+        self.servo.position=None
 
 def main():
     jeff = Collybot()
