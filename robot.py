@@ -16,7 +16,8 @@ class Collybot(Robot):
         self.fr = 0
         self.bl = 0
         self.br = 0
-        self.master_power = 0.2
+        self.motor_sf = 2
+        self.master_power = 0
 
     def power_H0(self):
         self.power_board.outputs[OUT_H0].is_enabled = True
@@ -54,7 +55,23 @@ class Collybot(Robot):
     def depower_L3(self):
         self.power_board.outputs[OUT_L3].is_enabled = False
     
-    def apply(self):
+    def slow(self):
+        self.master_power = 0.15
+        self.scale_converersion()
+
+    def medium(self):
+        self.master_power = 0.3
+        self.scale_convervesion()
+
+    def fast(self):
+        self.master_power = 0.5
+        self.scale_convervesion()
+
+    def scale_convervesion(self):
+        self.front_master_power = self.master_power
+        self.back_master_power = self.master_power/self.motor_sf
+
+    def move(self):
         self.fb.motors[0].power=self.fl
         self.fb.motors[1].power=self.fr
         self.bb.motors[0].power=self.bl
@@ -62,35 +79,35 @@ class Collybot(Robot):
 
     def forwards(self):
         print("moving forwards")
-        self.fl = self.master_power
-        self.fr = self.master_power
-        self.bl = self.master_power
-        self.br = self.master_power
-        self.apply()
+        self.fl = self.front_master_power
+        self.fr = self.front_master_power
+        self.bl = self.back_master_power
+        self.br = self.back_master_power
+        self.move()
 
     def backwards(self):
         print("moving backwards")
-        self.fl = -self.master_power
-        self.fr = -self.master_power
-        self.bl = -self.master_power
-        self.br = -self.master_power
-        self.apply()
+        self.fl = -self.front_master_power
+        self.fr = -self.front_master_power
+        self.bl = -self.back_master_power
+        self.br = -self.back_master_power
+        self.move()
 
     def left(self):
         print("moving left")
-        self.fl = 2*self.master_power
-        self.fr = -2*self.master_power
-        self.bl = -2*self.master_power
-        self.br = 2*self.master_power
-        self.apply()
+        self.fl = 2*self.front_master_power
+        self.fr = -2*self.front_master_power
+        self.bl = -2*self.back_master_power
+        self.br = 2*self.back_master_power
+        self.move()
 
     def right(self):
         print("moving right")
-        self.fl = -2*self.master_power
-        self.fr = 2*self.master_power
-        self.bl = 2*self.master_power
-        self.br = -2*self.master_power
-        self.apply()
+        self.fl = -2*self.front_master_power
+        self.fr = 2*self.front_master_power
+        self.bl = 2*self.back_master_power
+        self.br = -2*self.back_master_power
+        self.move()
 
     def stop(self):
         print("stopping")
@@ -98,19 +115,26 @@ class Collybot(Robot):
         self.fr = 0
         self.bl = 0
         self.br = 0
-        self.apply()
+        self.move()
 
     def movement_test(self):
         print("starting movement test")
-        self.left()
-        time.sleep(5)
-        self.right()
-        time.sleep(5)
-        self.forwards()
-        time.sleep(5)
-        self.backwards()
-        time.sleep(5)
-        self.stop()
+        for i in range (0, 3):
+            if i == 0:
+                self.slow()
+            elif i == 1:
+                self.medium()
+            else:
+                self.fast()
+            self.left()
+            time.sleep(5)
+            self.right()
+            time.sleep(5)
+            self.forwards()
+            time.sleep(5)
+            self.backwards()
+            time.sleep(5)
+            self.stop()
 
 
     def marker(self):
