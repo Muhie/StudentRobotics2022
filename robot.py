@@ -9,7 +9,7 @@ class Collybot(Robot):
         super().__init__() #call robot contructor
         self.fb = self.motor_boards['SR0WE7'] #Front motorboard
         self.bb = self.motor_boards['SR0JH18'] #Back motorboard
-        #self.servo=self.servo_board.servos[0]
+        self.servo=self.servo_board.servos[0]
         self.marker_ids = self.camera.save(self.usbkey / "initial-view.png")
         self.fov = 60
         self.fl = 0
@@ -141,20 +141,26 @@ class Collybot(Robot):
             self.marker()
             if len(self.markers) > 0:
                 print('To locate')
-
-    def start(self):
-        self.power_H1()
-        self.power_H0()
-        self.movement_test()
-        #self.servo_test()
-        #self.marker_test()
     
     def servo_test(self):
         self.servo.position=0.5
         time.sleep(5)
         self.servo.position=-0.5
         time.sleep(5)
-        self.servo.position=None
+        self.spin_servo_clockwise()
+
+    def spin_servo_clockwise(self,rotations):
+        for i in range(rotations):
+            self.servo.position=1
+            time.sleep(1)
+
+    def start(self):
+        self.power_H1()
+        self.power_H0()
+        self.power_L0()
+        #self.movement_test()
+        self.servo_test()
+        #self.marker_test()
 
 def main():
     jeff = Collybot()
