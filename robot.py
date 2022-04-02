@@ -57,19 +57,22 @@ class Collybot(Robot):
     
     def slow(self):
         self.master_power = 0.15
-        self.scale_converersion()
+        print('Change to slow speed')
+        self.scale_conversion()
 
     def medium(self):
         self.master_power = 0.3
-        self.scale_convervesion()
+        print('Change to medium speed')
+        self.scale_conversion()
 
     def fast(self):
         self.master_power = 0.5
-        self.scale_convervesion()
+        print('Change to fast speed')
+        self.scale_conversion()
 
-    def scale_convervesion(self):
-        self.front_master_power = self.master_power
-        self.back_master_power = self.master_power/self.motor_sf
+    def scale_conversion(self):
+        self.front_master_power = self.master_power/self.motor_sf
+        self.back_master_power = self.master_power
 
     def move(self):
         self.fb.motors[0].power=self.fl
@@ -126,16 +129,31 @@ class Collybot(Robot):
                 self.medium()
             else:
                 self.fast()
-            self.left()
-            time.sleep(5)
-            self.right()
-            time.sleep(5)
             self.forwards()
-            time.sleep(5)
-            self.backwards()
-            time.sleep(5)
+            time.sleep(2)
             self.stop()
+            time.sleep(1)
 
+            self.backwards()
+            time.sleep(2)
+            self.stop()
+            time.sleep(1)
+
+            self.left()
+            time.sleep(2)
+            self.stop()
+            time.sleep(1)
+
+            self.right()
+            time.sleep(2)
+            self.stop()
+            time.sleep(1)
+
+    def forwards_test(self):
+        self.forwards()
+        time.sleep(2)
+        self.stop()
+        time.sleep(1)
 
     def marker(self):
         self.markers = self.camera.see()
@@ -149,7 +167,7 @@ class Collybot(Robot):
             markers = self.camera.see()
             print("I can see", len(markers), "markers:")
             if markers:
-                self.forwards()
+                self.forwards_test()
             for m in markers:
                 print(" - Marker #{0} is {1} metres away".format(m.id, m.distance))
 
@@ -167,11 +185,12 @@ class Collybot(Robot):
                 print('To locate')
     
     def servo_test(self):
-        self.servo.position=0.5
+        self.medium()
+        self.servo.position=1
         time.sleep(5)
-        self.servo.position=-0.5
+        self.servo.position=-1
         time.sleep(5)
-        self.spin_servo_clockwise()
+        #self.spin_servo_clockwise()
 
     def spin_servo_clockwise(self,rotations):
         for i in range(rotations):
@@ -183,8 +202,8 @@ class Collybot(Robot):
         self.power_H0()
         self.power_L0()
         #self.movement_test()
-        self.servo_test()
-        #self.marker_test()
+        #self.servo_test()
+        self.marker_test()
 
 def main():
     jeff = Collybot()
