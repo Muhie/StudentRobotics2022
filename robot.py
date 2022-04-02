@@ -1,5 +1,3 @@
-from asyncio import FastChildWatcher
-from pickle import FALSE
 from sr.robot3 import *
 print("hello world")
 import time
@@ -77,8 +75,8 @@ class Collybot(Robot):
         self.back_master_power = self.master_power
 
     def move(self):
-        self.fb.motors[0].power=self.fl
-        self.fb.motors[1].power=self.fr
+        self.fb.motors[1].power=self.fl
+        self.fb.motors[0].power=self.fr
         self.bb.motors[0].power=self.bl
         self.bb.motors[1].power=self.br
 
@@ -100,18 +98,18 @@ class Collybot(Robot):
 
     def left(self):
         print("moving left")
-        self.fl = 2*self.front_master_power
-        self.fr = -2*self.front_master_power
-        self.bl = -2*self.back_master_power
-        self.br = 2*self.back_master_power
-        self.move()
-
-    def right(self):
-        print("moving right")
         self.fl = -2*self.front_master_power
         self.fr = 2*self.front_master_power
         self.bl = 2*self.back_master_power
         self.br = -2*self.back_master_power
+        self.move()
+
+    def right(self):
+        print("moving right")
+        self.fl = 2*self.front_master_power
+        self.fr = -2*self.front_master_power
+        self.bl = -2*self.back_master_power
+        self.br = 2*self.back_master_power
         self.move()
 
     def stop(self):
@@ -188,9 +186,40 @@ class Collybot(Robot):
                 self.stop()
 
     def find_the_angle(self):
-        markers = self.camera.see()
-        if markers:
-            print(markers[0].spherical)
+        for i in range(0, 50):
+            markers = self.camera.see()
+            if markers:
+                print(markers[0].spherical)
+
+    def chase_the_markers_advanced(self):
+        while True:
+            markers = self.camera.see()
+            if markers:
+                while markers[0].distance > 1000:
+                    if markers[0].spherical.rot_y < 0.1 and markers[0].spherical.rot_y > -0.1:
+                        self.medium()
+                        self.forwards()
+                        time.sleep(0.1)
+                        self.stop()
+                        markers = self.camera.see()
+                        if not markers:
+                            break
+                    elif markers[0].spherical.rot_y > 0.1:
+                        self.medium()
+                        self.right()
+                        time.sleep(0.1)
+                        self.stop()
+                        markers = self.camera.see()
+                        if not markers:
+                            break
+                    else:
+                        self.medium()
+                        self.left()
+                        time.sleep(0.1)
+                        self.stop()
+                        markers = self.camera.see()
+                        if not markers:
+                            break
 
     def emergancy(self):
         #Emergancy shutdown, logs power status of battery
@@ -225,7 +254,9 @@ class Collybot(Robot):
         #self.movement_test()
         #self.servo_test()
         #self.marker_test()
-        self.chase_the_marker()
+        #self.chase_the_marker()
+        #self.find_the_angle()
+        self.chase_the_markers_advanced()
 
 def main():
     jeff = Collybot()
