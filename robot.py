@@ -1,3 +1,5 @@
+from asyncio import FastChildWatcher
+from pickle import FALSE
 from sr.robot3 import *
 print("hello world")
 import time
@@ -9,7 +11,7 @@ class Collybot(Robot):
         super().__init__() #call robot contructor
         self.fb = self.motor_boards['SR0WE7'] #Front motorboard
         self.bb = self.motor_boards['SR0JH18'] #Back motorboard
-        self.servo=self.servo_board.servos[0]
+        # self.servo=self.servo_board.servos[0]
         self.marker_ids = self.camera.save(self.usbkey / "initial-view.png")
         self.fov = 60
         self.fl = 0
@@ -171,6 +173,25 @@ class Collybot(Robot):
             for m in markers:
                 print(" - Marker #{0} is {1} metres away".format(m.id, m.distance))
 
+    def chase_the_marker(self):
+        print('Playing chase the marker')
+        while True:
+            markers = self.camera.see()
+            if markers:
+                while markers[0].distance > 1000:
+                    self.medium()
+                    self.forwards()
+                    markers = self.camera.see()
+                    if not markers:
+                        self.stop()
+                        break
+                self.stop()
+
+    def find_the_angle(self):
+        markers = self.camera.see()
+        if markers:
+            print(markers[0].spherical)
+
     def emergancy(self):
         #Emergancy shutdown, logs power status of battery
         self.power_board.outputs.power_off()
@@ -184,18 +205,18 @@ class Collybot(Robot):
             if len(self.markers) > 0:
                 print('To locate')
     
-    def servo_test(self):
-        self.medium()
-        self.servo.position=1
-        time.sleep(5)
-        self.servo.position=-1
-        time.sleep(5)
-        #self.spin_servo_clockwise()
+    # def servo_test(self):
+    #     self.medium()
+    #     self.servo.position=1
+    #     time.sleep(5)
+    #     self.servo.position=-1
+    #     time.sleep(5)
+    #     #self.spin_servo_clockwise()
 
-    def spin_servo_clockwise(self,rotations):
-        for i in range(rotations):
-            self.servo.position=1
-            time.sleep(1)
+    # def spin_servo_clockwise(self,rotations):
+    #     for i in range(rotations):
+    #         self.servo.position=1
+    #         time.sleep(1)
 
     def start(self):
         self.power_H1()
@@ -203,7 +224,8 @@ class Collybot(Robot):
         self.power_L0()
         #self.movement_test()
         #self.servo_test()
-        self.marker_test()
+        #self.marker_test()
+        self.chase_the_marker()
 
 def main():
     jeff = Collybot()
