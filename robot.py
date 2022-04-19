@@ -80,7 +80,7 @@ class Collybot(Robot):
         self.scale_conversion()
 
     def medium(self):
-        self.master_power = 0.3
+        self.master_power = 0.35
         print('Change to medium speed')
         self.scale_conversion()
 
@@ -227,8 +227,8 @@ class Collybot(Robot):
         while self.stage == self.runonce:
             markers = self.camera.see()
             if markers:
-                while markers[0].distance > 500:
-                    if markers[0].distance < 600:
+                while markers[0].distance >= 500:
+                    if markers[0].distance <= 670:
                         self.stage += 1
                         self.start()
                         break
@@ -386,32 +386,30 @@ class Collybot(Robot):
         if self.boxposition[0] >= 700:
             print("going left")
             self.left()
-            time.sleep(0.2)
+            time.sleep(0.25)
             self.stop()
         elif self.boxposition[0] >= 176 and self.boxposition[0] <= 699:
             print("in the centre")
             self.forwards()
-            time.sleep(1)
+            time.sleep(1.25)
             self.stop()
         elif self.boxposition[0] <= 175:
             print("going right!")
             self.right()
-            time.sleep(0.2)
+            time.sleep(0.25)
             self.stop()
         else:
             self.forwards()
             time.sleep(0.2)
     def where_CanY(self):
-        if self.boxposition[3] < 200 and self.boxposition[3] > 50:
+        if self.boxposition[3] < 200 and self.boxposition[3] > 0:
             print("we are very far away")
             self.ultra_Slow()
-            print(self.runonce)
             self.where_CanX()
             #self.DrawLines()
         elif self.boxposition[3] < 649 and self.boxposition[3] > 200: 
             print("getting closer")
             self.ultra_Slow()
-            print(self.runonce)
             self.where_CanX()
         elif self.boxposition[3] >= 650 and self.boxposition < 800:
             print("object detected is extremely close ")
@@ -430,9 +428,10 @@ class Collybot(Robot):
                 self.can_Regonition()
             except:
                 print("EXCEPT IS RUNING")
-        time.sleep(1)
+        self.stop()
+        self.slow()
         self.returntosender()
-        time.sleep(6.5)
+        time.sleep(3.4)
         self.stop()
         self.chase_the_markers_advanced()
     def start(self):
@@ -449,6 +448,7 @@ class Collybot(Robot):
         elif self.stage == 1:
             self.runonce = 1
             print("stage two initated")
+            self.slow()
             self.rotateanticlockwise()
             time.sleep(2.5)
             self.slow()
@@ -457,7 +457,13 @@ class Collybot(Robot):
             self.power_board.piezo.buzz(1, 1047)
             self.scale_conversion()
             self.canSeeker()
-            
+        elif self.stage == 2:
+            self.scale_conversion()
+            self.slow()
+            self.rotateanticlockwise()
+            time.sleep(2.5)
+            self.forwards()
+            time.sleep(3.5)
         
 def main():
     jeff = Collybot()
