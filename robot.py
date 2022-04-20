@@ -228,7 +228,7 @@ class Collybot(Robot):
             markers = self.camera.see()
             if markers:
                 while markers[0].distance >= 500:
-                    if markers[0].distance <= 670:
+                    if markers[0].distance <= 700:
                         self.stage += 1
                         self.start()
                         break
@@ -407,11 +407,11 @@ class Collybot(Robot):
             self.ultra_Slow()
             self.where_CanX()
             #self.DrawLines()
-        elif self.boxposition[3] < 649 and self.boxposition[3] > 200: 
+        elif self.boxposition[3] < 700 and self.boxposition[3] > 200: 
             print("getting closer")
             self.ultra_Slow()
             self.where_CanX()
-        elif self.boxposition[3] >= 650 and self.boxposition < 800:
+        elif self.boxposition[3] >= 700 and self.boxposition < 800:
             print("object detected is extremely close ")
             self.braking()
             self.stop()
@@ -435,6 +435,18 @@ class Collybot(Robot):
         self.stop()
         self.chase_the_markers_advanced()
     def start(self):
+        #if self.zone == 0:
+         #self.homemarker1 == 0
+         #self.homemarker2 == 27
+        #elif self.zone == 1:
+         #self.homemarker1 == 6
+         #self.homemarker2 == 7
+        #elif self.zone == 2:
+         #self.homemarker1 == 13
+         #self.homemarker2 == 14
+        #elif self.zone == 3:
+         #self.homemarker1 == 21
+         #self.homemarker2 == 20
         if self.stage == 0:
             self.runonce = 0
             print("stage 1 initiated")
