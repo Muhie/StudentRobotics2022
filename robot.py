@@ -336,9 +336,10 @@ class Collybot(Robot):
                 print('To locate')
 
     def open_arm(self):
+        self.depower_L1()
         self.power_L0()
         time.sleep(0.05)
-        self.depower_L0()
+        #self.depower_L0()
 
     def close_arm(self):
         self.depower_L0()
@@ -448,11 +449,10 @@ class Collybot(Robot):
 
     def canSeeker(self):
         #self.open_arm()
-        for i in range(1,20):
+        for i in range(1,10):
             print("pass")
             print(i)
             try:
-                time.sleep(0.05)
                 self.camera.save(self.usbkey / "can_Detection.png")
                 print("trying to find cans")
                 self.can_Regonition()
@@ -462,7 +462,7 @@ class Collybot(Robot):
         self.stop()
         self.slow()
         self.returntosender()
-        time.sleep(3.4)
+        time.sleep(1.5)
         self.stop()
         self.chase_the_markers_advanced()
 
@@ -483,6 +483,9 @@ class Collybot(Robot):
             self.homemarker1 = 21
             self.homemarker2 = 20
         if self.stage == 0:
+            #self.close_arm()
+            time.sleep(1)
+            self.open_arm()
             self.runonce = 0
             print("stage 1 initiated")
             time.sleep(1)
